@@ -1,0 +1,23 @@
+{
+  "name": "coinbase_project",
+  "version": "1.0.0",
+  "description": "integration API from coinbase project to manage portfolio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forkyfor/coinbase_project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forkyfor/coinbase_project/issues"
+  },
+  "homepage": "https://github.com/forkyfor/coinbase_project#readme",
+  "dependencies": {
+    "coinbase": "^2.0.8",
+    "http": "^0.0.1-security"
+  }
+}
