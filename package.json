@@ -4,6 +4,7 @@
   "description": "integration API from coinbase project to manage portfolio",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,8 @@
   "homepage": "https://github.com/forkyfor/coinbase_project#readme",
   "dependencies": {
     "coinbase": "^2.0.8",
-    "http": "^0.0.1-security"
+    "csv-writer": "^1.6.0",
+    "http": "^0.0.1-security",
+    "yenv": "^3.0.1"
   }
 }

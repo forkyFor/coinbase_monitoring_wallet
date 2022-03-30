@@ -1,4 +1,27 @@
 var auth = require('./services/authentication');
+var portfolio_manage = require('./services/portfolio');
+var csv_management = require('./services/csv_management');
 
-auth.getClient();
 console.log("start app");
+var client_coinbase = auth.get_client();
+
+console.log("authenticated");
+portfolio_manage.set_portfolio(client_coinbase);
+ 
+
+
+var timeout = setInterval(function() {
+    if(portfolio_manage.get_portfolio().length !== 0) {
+        console.log("portfolio received");
+        clearInterval(timeout); 
+
+        console.log("update values amount");
+        portfolio_manage.add_amount_transcations(client_coinbase);
+        
+        setTimeout(
+            function(){
+                csv_management.write_csv(portfolio_manage.get_portfolio());
+            },10000
+        )
+    }
+}, 30000);
