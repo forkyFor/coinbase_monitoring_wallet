@@ -12,14 +12,15 @@ function write_csv_async(portfolio){
     var header = [];
     header[0] = {id: 'currency', title: 'CURRENCY'}
     for(var i =0; i < keys.length; i++){
-        header[i+1] = {id: keys[i], title: keys[i].toUpperCase() }
+        header[i+1] = {id: keys[i], title: keys[i].toUpperCase().replace("_", " ") }
     }
   
     // Passing the column names intp the module
     const csvWriter = createCsvWriter({
         // Output csv file name is geek_data
         path: 'portfolio.csv',
-        header: header
+        header: header,
+        fieldDelimiter: ';'
     });
 
     var results = [];
@@ -28,13 +29,20 @@ function write_csv_async(portfolio){
         results[i] = {};
         results[i].currency= portfolio[i].currency
         for(var y=0; y < keys.length; y++){
-            results[i][keys[y]] = portfolio[i].values_live[keys[y]];
+            try{
+                if(portfolio[i].values_live[keys[y]])
+                results[i][keys[y]] = portfolio[i].values_live[keys[y]].toString();
+            }catch(error){
+                console.log(error);
+            }
         }
     }
 
+
     csvWriter
     .writeRecords(results)
-    .then(()=> console.log('Data uploaded into csv successfully'));
+    .then(()=> console.log('Data uploaded into csv successfully'))
+    .catch((error)=> console.log('Error ' + error));
 }
 
 module.exports = {

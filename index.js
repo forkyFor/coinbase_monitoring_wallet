@@ -10,18 +10,16 @@ portfolio_manage.set_portfolio(client_coinbase);
  
 
 
-var timeout = setInterval(function() {
+setInterval(function() {
     if(portfolio_manage.get_portfolio().length !== 0) {
-        console.log("portfolio received");
-        clearInterval(timeout); 
 
+        console.log("portfolio received");
         console.log("update values amount");
+
         portfolio_manage.add_amount_transcations(client_coinbase);
-        
-        setTimeout(
-            function(){
-                csv_management.write_csv(portfolio_manage.get_portfolio());
-            },10000
-        )
     }
-}, 30000);
+}, 10000);
+
+setInterval(function() {
+    csv_management.write_csv(portfolio_manage.get_portfolio());
+}, 15000);
