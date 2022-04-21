@@ -15,7 +15,7 @@ function write_csv_async(portfolio){
         header[i+1] = {id: keys[i], title: keys[i].toUpperCase().replace("_", " ") }
     }
   
-    // Passing the column names intp the module
+    // Passing the column names into the module
     const csvWriter = createCsvWriter({
         // Output csv file name is geek_data
         path: 'portfolio.csv',

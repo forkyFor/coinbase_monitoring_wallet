@@ -4,13 +4,18 @@ var amount_invested_all_portfolio = 0;
 var update_portfolio = function(currency, num_transactions, amount_invested, actual_amount, percDiff){
     for(var i=0; i < portfolio.length; i++){
         if(portfolio[i].currency == currency){
-            portfolio[i].values_live = {};
-            portfolio[i].values_live.num_transactions = num_transactions.toString();
-            portfolio[i].values_live.amount_invested = amount_invested.toString().replace('.', ',');
-            portfolio[i].values_live.actual_amount = actual_amount.toString().replace('.', ',');
-            portfolio[i].values_live.percentage_difference = percDiff.toString().replace('.', ',');
+            if(actual_amount > 0){
+                portfolio[i].values_live = {};
+                portfolio[i].values_live.num_transactions = num_transactions.toString();
+                portfolio[i].values_live.amount_invested = amount_invested.toString().replace('.', ',');
+                portfolio[i].values_live.actual_amount = actual_amount.toString().replace('.', ',');
+                portfolio[i].values_live.percentage_difference = percDiff.toString().replace('.', ',');
+            }else{
+                portfolio.splice(i, 1);
+            }
         }
     }
+
 }
 
 var set_portfolio_async = function(client){
@@ -66,7 +71,12 @@ var add_amount_transcations_async = function(client_coinbase){
                             amount_invested += parseFloat(txs[i].native_amount.amount);
                         }
                         amount_invested_all_portfolio += amount_invested;
-                        var percDiff =  parseFloat(( (parseFloat(account.native_balance.amount) / amount_invested) - 1) * 100).toFixed(2);
+                        
+                        if( amount_invested <= 0)
+                            var percDiff =  parseFloat(( parseFloat(account.native_balance.amount) - 1) * 100).toFixed(2);
+                        else
+                            var percDiff =  parseFloat(( (parseFloat(account.native_balance.amount) / amount_invested) - 1) * 100).toFixed(2);
+                        
                         update_portfolio(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, amount_invested_all_portfolio);
                     }
                 });
