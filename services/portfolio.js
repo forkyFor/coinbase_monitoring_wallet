@@ -1,4 +1,7 @@
 var portfolio = [];
+var mail_manage = require('./notify_by_mail');
+const yenv = require('yenv')
+const vars = yenv('vars.yaml');
 
 // values updated and sent at csv file
 var update_portfolio = function(currency, num_transactions, amount_invested, actual_amount, percDiff, average_price_for_money, actual_price_coin){
@@ -106,6 +109,15 @@ var add_amount_transcations_async = function(client_coinbase){
                         else
                             var percDiff =  parseFloat(( (actual_price_coin / txs.average_price_for_money) - 1) * 100).toFixed(2);
                         
+                            percDiff = 28;
+                        
+                        if(vars.BOOL_MAIL_NOTIFY){
+                            //verify if percentage is over the threshold
+                            if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
+                                
+                                mail_manage.send_mail(account.currency);
+                            }
+                        }
                         
                         update_portfolio(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, txs.average_price_for_money, actual_price_coin);
                     }
