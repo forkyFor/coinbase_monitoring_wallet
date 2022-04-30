@@ -11,13 +11,11 @@ console.log("authenticated");
 portfolio_manage.set_portfolio(client_coinbase);
  
 
-
 setInterval(function() {
     if(portfolio_manage.get_portfolio().length !== 0) {
 
         console.log("portfolio received");
         console.log("update values amount");
-
         portfolio_manage.add_amount_transcations(client_coinbase);
     }
 }, 10000);
@@ -25,5 +23,5 @@ setInterval(function() {
 if(vars.BOOL_WRITE_CSV){
     setInterval(function() {
         csv_management.write_csv(portfolio_manage.get_portfolio());
-    }, 15000 );
+    }, 30000 );
 }

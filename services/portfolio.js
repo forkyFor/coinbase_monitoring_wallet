@@ -2,6 +2,7 @@ var portfolio = [];
 var mail_manage = require('./notify_by_mail');
 const yenv = require('yenv')
 const vars = yenv('vars.yaml');
+var transacting = false;
 
 
  
@@ -23,6 +24,49 @@ var update_portfolio = function(currency, num_transactions, amount_invested, act
             }
         }
     }
+
+}
+
+//verify if all accounts have the values_live associated
+function verifyValueSLive(){
+    var verify = true;
+
+    for(var i=0; i < portfolio.length; i++){
+        if(portfolio[i].values_live == undefined)
+        verify=false;
+    }
+    return verify;
+}
+
+
+//function to trasfer money at the last account with minus percDiff in array
+function transferMoney(account){
+
+    if(verifyValueSLive()){
+        portfolio.sort(function (a, b) {
+            var percentageA = parseFloat(a.values_live.percentage_difference), percentageB = parseFloat(b.values_live.percentage_difference)
+            return percentageA - percentageB
+        });
+
+        //calculate how many amount send it
+        var amount_sent = (parseFloat(account.balance.amount) * parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)) / 100;
+
+        if(!transacting){
+            transacting = true;
+            account.transferMoney({'to': portfolio[0].id.toString(),
+                                    'currency': account.currency,
+                                    'amount': amount_sent.toString().replace(".", ",")}, 
+            function(err, tx) {   
+                console.log(err);
+                console.log(tx);
+                transacting = false;
+                if(vars.BOOL_MAIL_NOTIFY_TRANSACTION){
+                    mail_manage.send_mail_transaction(account.currency, portfolio[0].currency, amount_sent, err, tx); 
+                }
+            });
+        }
+    }
+
 
 }
 
@@ -109,10 +153,7 @@ var add_amount_transcations_async = function(client_coinbase){
 
 
                         //calculate percentage
-                        if( average_price_for_money <= 0)
-                            var percDiff =  parseFloat(( actual_price_coin - 1) * 100).toFixed(2);
-                        else
-                            var percDiff =  parseFloat(( (actual_price_coin / average_price_for_money) - 1) * 100).toFixed(4);
+                        var percDiff =  parseFloat(( (actual_price_coin / average_price_for_money) - 1) * 100).toFixed(4);
                     
 
 
@@ -120,8 +161,16 @@ var add_amount_transcations_async = function(client_coinbase){
                         if(vars.BOOL_MAIL_NOTIFY){
                             //verify if percentage is over the threshold
                             if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
-                                
-                                mail_manage.send_mail(account.currency);
+                                //start transactions
+                                mail_manage.send_mail(account.currency);                                
+                            }
+                        }
+
+                        if(vars.BOOL_AUTOMATIC_TRANSFER){
+                            //verify if percentage is over the threshold
+                            if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
+                                //start transactions
+                                transferMoney(account);
                             }
                         }
                         

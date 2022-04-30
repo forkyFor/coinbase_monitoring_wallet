@@ -34,13 +34,37 @@ var send_mail_async = function(coin){
     }
 }
 
+var send_mail_transaction_async = function(from_currency, to_currency, amount_sent, err, txt){
+
+    var mailOptions = {
+        from: vars.MAIL_NOTIFY,
+        to: vars.MAIL_DEST_NOTIFY,
+        subject: 'Transaction from  ' + from_currency + ' to ' + to_currency + '. Amount : ' + amount_sent,
+        text: 'txt: \n ' + txt + "\n\n\n" + "err: \n" + err
+    };  
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+            mail_sent.push(coin);
+        }
+    });
+}
+
 
 async function send_mail(coin) {
     return await send_mail_async(coin);
 }
 
+async function send_mail_transaction(from_currency, to_currency, amount_sent, err, txt) {
+    return await send_mail_transaction_async(from_currency, to_currency, amount_sent, err, txt);
+}
+
 module.exports = {
-    send_mail: send_mail
+    send_mail: send_mail,
+    send_mail_transaction: send_mail_transaction
 }
     
 
