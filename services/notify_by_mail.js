@@ -13,6 +13,12 @@ var transporter = nodemailer.createTransport({
   });
 
 
+  //reset mails sent every 5 minutes
+setInterval(function() {
+    mail_sent = []
+}, 60000 * 5);
+
+
 var send_mail_async = function(coin){
 
     if(mail_sent.find(element => element == coin) == undefined){

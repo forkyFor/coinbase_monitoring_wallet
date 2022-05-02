@@ -57,8 +57,6 @@ function transferMoney(account){
                                     'currency': account.currency,
                                     'amount': amount_sent.toString().replace(".", ",")}, 
             function(err, tx) {   
-                console.log(err);
-                console.log(tx);
                 transacting = false;
                 if(vars.BOOL_MAIL_NOTIFY_TRANSACTION){
                     mail_manage.send_mail_transaction(account.currency, portfolio[0].currency, amount_sent, err, tx); 
@@ -173,7 +171,7 @@ var add_amount_transcations_async = function(client_coinbase){
                                 transferMoney(account);
                             }
                         }
-                        
+
                         update_portfolio(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin);
                     }
                 });
