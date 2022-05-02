@@ -1,4 +1,6 @@
 var csvwriter = require('csv-writer');
+const yenv = require('yenv')
+const vars = yenv('vars.yaml');
 
 
 function write_csv_async(portfolio){
@@ -18,7 +20,7 @@ function write_csv_async(portfolio){
     // Passing the column names into the module
     const csvWriter = createCsvWriter({
         // Output csv file name is geek_data
-        path: 'portfolio.csv',
+        path: vars.PATH_PORTFOLIO_CSV,
         header: header,
         fieldDelimiter: ';'
     });

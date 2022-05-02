@@ -59,6 +59,29 @@ var send_mail_transaction_async = function(from_currency, to_currency, amount_se
     });
 }
 
+var send_mail_report_async = function(){
+
+    var mailOptions = {
+        from: vars.MAIL_NOTIFY,
+        to: vars.MAIL_DEST_NOTIFY,
+        subject: 'Report portfolio coinbase',
+        attachments: [
+            {
+                path: vars.PATH_PORTFOLIO_CSV
+            }
+        ]
+    };  
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+            mail_sent.push(coin);
+        }
+    });
+}
+
 
 async function send_mail(coin) {
     return await send_mail_async(coin);
@@ -68,9 +91,14 @@ async function send_mail_transaction(from_currency, to_currency, amount_sent, er
     return await send_mail_transaction_async(from_currency, to_currency, amount_sent, err, txt);
 }
 
+async function send_mail_report() {
+    return await send_mail_report_async();
+}
+
 module.exports = {
     send_mail: send_mail,
-    send_mail_transaction: send_mail_transaction
+    send_mail_transaction: send_mail_transaction,
+    send_mail_report: send_mail_report
 }
     
 
