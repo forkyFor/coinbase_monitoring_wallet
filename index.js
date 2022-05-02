@@ -32,6 +32,5 @@ if(vars.BOOL_WRITE_CSV){
 if(vars.BOOL_REPORT_CSV){
     setInterval(function() {
         mail_management.send_mail_report();
-    }, 20000);
-    //}, 60000  * 60);
+    }, 60000  * 60 * 3);
 }

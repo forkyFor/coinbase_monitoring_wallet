@@ -26,7 +26,11 @@ var send_mail_async = function(coin){
             from: vars.MAIL_NOTIFY,
             to: vars.MAIL_DEST_NOTIFY,
             subject: 'Coin ' + coin + ' oltre il ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' di guadagno!',
-            text: 'That was easy!'
+            attachments: [
+                {
+                    path: vars.PATH_PORTFOLIO_CSV
+                }
+            ]
         };  
 
         transporter.sendMail(mailOptions, function(error, info){
