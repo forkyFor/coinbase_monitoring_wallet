@@ -1,4 +1,4 @@
-var portfolio = [];
+var wallet = [];
 var mail_manage = require('./notify_by_mail');
 const yenv = require('yenv')
 const vars = yenv('vars.yaml');
@@ -8,19 +8,19 @@ var transacting = false;
  
 
 // values updated and sent at csv file
-var update_portfolio = function(currency, num_transactions, amount_invested, actual_amount, percDiff, average_price_for_money, actual_price_coin){
-    for(var i=0; i < portfolio.length; i++){
-        if(portfolio[i].currency == currency){
+var update_wallet = function(currency, num_transactions, amount_invested, actual_amount, percDiff, average_price_for_money, actual_price_coin){
+    for(var i=0; i < wallet.length; i++){
+        if(wallet[i].currency == currency){
             if(actual_amount > 0){
-                portfolio[i].values_live = {};
-                portfolio[i].values_live.num_transactions = num_transactions.toString();
-                portfolio[i].values_live.amount_invested = amount_invested.toString().replace('.', ',');
-                portfolio[i].values_live.actual_amount = actual_amount.toString().replace('.', ',');
-                portfolio[i].values_live.average_price_for_money = average_price_for_money.toString().replace('.', ',');
-                portfolio[i].values_live.actual_price_coin = actual_price_coin.toString().replace('.', ',');
-                portfolio[i].values_live.percentage_difference = percDiff.toString().replace('.', ',');
+                wallet[i].values_live = {};
+                wallet[i].values_live.num_transactions = num_transactions.toString();
+                wallet[i].values_live.amount_invested = amount_invested.toString().replace('.', ',');
+                wallet[i].values_live.actual_amount = actual_amount.toString().replace('.', ',');
+                wallet[i].values_live.average_price_for_money = average_price_for_money.toString().replace('.', ',');
+                wallet[i].values_live.actual_price_coin = actual_price_coin.toString().replace('.', ',');
+                wallet[i].values_live.percentage_difference = percDiff.toString().replace('.', ',');
             }else{
-                portfolio.splice(i, 1);
+                wallet.splice(i, 1);
             }
         }
     }
@@ -31,8 +31,8 @@ var update_portfolio = function(currency, num_transactions, amount_invested, act
 function verifyValueSLive(){
     var verify = true;
 
-    for(var i=0; i < portfolio.length; i++){
-        if(portfolio[i].values_live == undefined)
+    for(var i=0; i < wallet.length; i++){
+        if(wallet[i].values_live == undefined)
         verify=false;
     }
     return verify;
@@ -43,7 +43,7 @@ function verifyValueSLive(){
 function transferMoney(account){
 
     if(verifyValueSLive()){
-        portfolio.sort(function (a, b) {
+        wallet.sort(function (a, b) {
             var percentageA = parseFloat(a.values_live.percentage_difference), percentageB = parseFloat(b.values_live.percentage_difference)
             return percentageA - percentageB
         });
@@ -53,13 +53,13 @@ function transferMoney(account){
 
         if(!transacting){
             transacting = true;
-            account.transferMoney({'to': portfolio[0].id.toString(),
+            account.transferMoney({'to': wallet[0].id.toString(),
                                     'currency': account.currency,
                                     'amount': amount_sent.toString().replace(".", ",")}, 
             function(err, tx) {   
                 transacting = false;
                 if(vars.BOOL_MAIL_NOTIFY_TRANSACTION){
-                    mail_manage.send_mail_transaction(account.currency, portfolio[0].currency, amount_sent, err, tx); 
+                    mail_manage.send_mail_transaction(account.currency, wallet[0].currency, amount_sent, err, tx); 
                 }
             });
         }
@@ -68,11 +68,11 @@ function transferMoney(account){
 
 }
 
-var set_portfolio_async = function(client){
+var set_wallet_async = function(client){
     client.getAccounts({limit: 100}, function(error, accounts) {
 
 
-        portfolio = accounts.filter(function(x){
+        wallet = accounts.filter(function(x){
             delete x.client;
             delete x.primary;
             delete x.type;
@@ -92,7 +92,7 @@ var set_portfolio_async = function(client){
             }, 100);
         }
         
-        let requests = portfolio.reduce((promiseChain, item) => {
+        let requests = wallet.reduce((promiseChain, item) => {
             return promiseChain.then(() => new Promise((resolve) => {
                 asyncFunction(item, resolve);
             }));
@@ -107,10 +107,10 @@ var set_portfolio_async = function(client){
 
 var add_amount_transcations_async = function(client_coinbase){
 
-    for(var i=0; i < portfolio.length; i++){
+    for(var i=0; i < wallet.length; i++){
 
 
-        client_coinbase.getAccount(portfolio[i].id, function(err, account) {
+        client_coinbase.getAccount(wallet[i].id, function(err, account) {
             var amount_invested = 0;
 
             // sum of token bought to calculate the average price
@@ -134,7 +134,7 @@ var add_amount_transcations_async = function(client_coinbase){
                             token_bought += parseFloat(txs[i].amount.amount);
                             
                             if(amount_invested < 0){
-                                //restart counts because for that portfolio was sell all portfolio in old transactions
+                                //restart counts because for that wallet was sell all wallet in old transactions
                                 amount_invested =0;
                                 token_bought =0;
                             }
@@ -172,7 +172,7 @@ var add_amount_transcations_async = function(client_coinbase){
                             }
                         }
 
-                        update_portfolio(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin);
+                        update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin);
                     }
                 });
             }
@@ -180,8 +180,8 @@ var add_amount_transcations_async = function(client_coinbase){
     }
 }
 
-async function set_portfolio(client) {
-    return await set_portfolio_async(client);
+async function set_wallet(client) {
+    return await set_wallet_async(client);
 }
 
 async function add_amount_transcations(client_coinbase) {
@@ -189,10 +189,10 @@ async function add_amount_transcations(client_coinbase) {
 }
 
 module.exports = {
-    get_portfolio: function () {
-        return portfolio;
+    get_wallet: function () {
+        return wallet;
     },
-    set_portfolio: set_portfolio,
+    set_wallet: set_wallet,
     add_amount_transcations: add_amount_transcations
 }
     

@@ -60,8 +60,8 @@ The features offered are:
 9.	BOOL_WRITE_CSV: boolean value that allows you to write the csv with the fields described in the first paragraph on the server (default: true)
 10.	BOOL_AUTOMATIC_TRANSFER: boolean value that allows you to start automatic transactions between coins in your wallet (still not working! default: false)
 11.	BOOL_MAIL_NOTIFY_TRANSACTION: boolean value that allows you to receive a notification for each automatic transaction performed (still not working! default: false)
-12.	BOOL_REPORT_CSV: boolean value that allows you to receive the csv report of the current situation of your portfolio via email
-13.	PATH_PORTFOLIO_CSV: path where the csv report will be written to the server
-14.	INTERVAL_SECONDS_UPDATE_PORTFOLIO: defines the seconds between two successive portfolio updates (default: 10 seconds)
+12.	BOOL_REPORT_CSV: boolean value that allows you to receive the csv report of the current situation of your wallet via email
+13.	PATH_WALLET_CSV: path where the csv report will be written to the server
+14.	INTERVAL_SECONDS_UPDATE_WALLET: defines the seconds between two successive wallet updates (default: 10 seconds)
 15.	INTERVAL_SECONDS_WRITE_CSV: defines the seconds between two successive updates of the csv report written on the server (default: 30 seconds)
 16.	INTERVAL_MINUTES_SEND_CSV_BY_MAIL: defines the minutes between two successive sending of the csv report by e-mail (default: 3 hours)
