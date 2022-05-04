@@ -25,7 +25,7 @@ var send_mail_async = function(coin){
         var mailOptions = {
             from: vars.MAIL_NOTIFY,
             to: vars.MAIL_DEST_NOTIFY,
-            subject: 'Coin ' + coin + ' oltre il ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' di guadagno!',
+            subject: 'Coin ' + coin + ' over ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' profit!',
             attachments: [
                 {
                     filename: 'wallet_report.csv',
