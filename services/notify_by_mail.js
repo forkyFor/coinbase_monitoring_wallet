@@ -28,6 +28,7 @@ var send_mail_async = function(coin){
             subject: 'Coin ' + coin + ' oltre il ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' di guadagno!',
             attachments: [
                 {
+                    filename: 'wallet_report.csv',
                     path: vars.PATH_WALLET_CSV
                 }
             ]
@@ -71,6 +72,7 @@ var send_mail_report_async = function(){
         subject: 'Report wallet coinbase',
         attachments: [
             {
+                filename: 'wallet_report.csv',
                 path: vars.PATH_WALLET_CSV
             }
         ]
