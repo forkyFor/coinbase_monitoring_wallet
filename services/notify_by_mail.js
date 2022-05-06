@@ -30,6 +30,10 @@ var send_mail_async = function(coin){
                 {
                     filename: 'wallet_report.csv',
                     path: vars.PATH_WALLET_CSV
+                },
+                {
+                    filename: 'wallet_report.xlsx',
+                    path: vars.PATH_WALLET_XLSX
                 }
             ]
         };  
@@ -74,6 +78,10 @@ var send_mail_report_async = function(){
             {
                 filename: 'wallet_report.csv',
                 path: vars.PATH_WALLET_CSV
+            },
+            {
+                filename: 'wallet_report.xlsx',
+                path: vars.PATH_WALLET_XLSX
             }
         ]
     };  
