@@ -8,7 +8,7 @@ var transacting = false;
  
 
 // values updated and sent at csv file
-var update_wallet = function(currency, num_transactions, amount_invested, actual_amount, percDiff, average_price_for_money, actual_price_coin){
+var update_wallet = function(currency, num_transactions, amount_invested, actual_amount, percDiff, average_price_for_money, actual_price_coin, token_bought){
     for(var i=0; i < wallet.length; i++){
         if(wallet[i].currency == currency){
             if(actual_amount > 0){
@@ -19,6 +19,7 @@ var update_wallet = function(currency, num_transactions, amount_invested, actual
                 wallet[i].values_live.average_price_for_money = average_price_for_money.toString().replace('.', ',');
                 wallet[i].values_live.actual_price_coin = actual_price_coin.toString().replace('.', ',');
                 wallet[i].values_live.percentage_difference = percDiff.toString().replace('.', ',');
+                wallet[i].values_live.token_bought = token_bought.toString().replace('.', ',');
             }else{
                 wallet.splice(i, 1);
             }
@@ -172,7 +173,7 @@ var add_amount_transcations_async = function(client_coinbase){
                             }
                         }
 
-                        update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin);
+                        update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin, token_bought);
                     }
                 });
             }
