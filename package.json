@@ -20,6 +20,7 @@
   "dependencies": {
     "coinbase": "^2.0.8",
     "csv-writer": "^1.6.0",
+    "excel4node": "^1.7.2",
     "http": "^0.0.1-security",
     "nodemailer": "^6.7.3",
     "yenv": "^3.0.1"

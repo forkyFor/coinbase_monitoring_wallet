@@ -1,6 +1,7 @@
 var auth = require('./services/authentication');
 var wallet_manage = require('./services/wallet');
 var csv_management = require('./services/csv_management');
+var xlsx_management = require('./services/xlsx_management');
 var mail_management = require('./services/notify_by_mail');
 const yenv = require('yenv')
 const vars = yenv('vars.yaml');
@@ -25,6 +26,13 @@ if(vars.BOOL_WRITE_CSV){
     setInterval(function() {
         csv_management.write_csv(wallet_manage.get_wallet());
     }, parseFloat(vars.INTERVAL_SECONDS_WRITE_CSV) * 1000 );
+}
+
+
+if(vars.BOOL_WRITE_XLSX){
+    setInterval(function() {
+        xlsx_management.write_xlsx(wallet_manage.get_wallet());
+    }, parseFloat(vars.INTERVAL_SECONDS_WRITE_XLSX) * 1000 );
 }
 
 
