@@ -19,13 +19,14 @@ setInterval(function() {
 }, 60000 * 5);
 
 
-var send_mail_async = function(coin){
+var send_mail_async = function(coin, percentage){
 
     if(mail_sent.find(element => element == coin) == undefined){
         var mailOptions = {
             from: vars.MAIL_NOTIFY,
             to: vars.MAIL_DEST_NOTIFY,
             subject: 'Coin ' + coin + ' over ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' profit!',
+            text: 'Actual profit: ' + percentage,
             attachments: [
                 {
                     filename: 'wallet_report.csv',
@@ -97,8 +98,8 @@ var send_mail_report_async = function(){
 }
 
 
-async function send_mail(coin) {
-    return await send_mail_async(coin);
+async function send_mail(coin, percentage) {
+    return await send_mail_async(coin, percentage);
 }
 
 async function send_mail_transaction(from_currency, to_currency, amount_sent, err, txt) {

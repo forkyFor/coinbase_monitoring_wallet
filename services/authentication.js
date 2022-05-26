@@ -1,4 +1,4 @@
-var Client = require('coinbase').Client;
+var Client = require('../libs/coinbase').Client;
 const yenv = require('yenv')
 const vars = yenv('vars.yaml');
 
