@@ -30,13 +30,15 @@ function write_csv_async(wallet){
     for(var i=0; i < wallet.length; i++){
         results[i] = {};
         results[i].currency= wallet[i].currency
-        for(var y=0; y < keys.length; y++){
-            try{
-                if(wallet[i].values_live[keys[y]])
-                results[i][keys[y]] = wallet[i].values_live[keys[y]].toString();
-            }catch(error){
-                console.log(error);
+        
+        try{
+            for(var y=0; y < keys.length; y++){
+                
+                    if(wallet[i].values_live[keys[y]])
+                    results[i][keys[y]] = wallet[i].values_live[keys[y]].toString();
             }
+        }catch(error){
+            console.log(error);
         }
     }
 
