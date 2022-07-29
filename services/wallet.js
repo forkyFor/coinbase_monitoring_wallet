@@ -110,74 +110,75 @@ var add_amount_transcations_async = function(client_coinbase){
 
     for(var i=0; i < wallet.length; i++){
 
+        try{
+                client_coinbase.getAccount(wallet[i].id, function(err, account) {
+                var amount_invested = 0;
 
-        client_coinbase.getAccount(wallet[i].id, function(err, account) {
-            var amount_invested = 0;
+                // sum of token bought to calculate the average price
+                var token_bought = 0;
+            
+                if(account){
+                    account.getTransactions({limit:100}, function(err, txs) {
+                        if(txs){
 
-            // sum of token bought to calculate the average price
-            var token_bought = 0;
+                            //sort transactions for date
+                            txs.sort(function (a, b) {
+                                var dateA = new Date(a.created_at), dateB = new Date(b.created_at)
+                                return dateA - dateB
+                            });
 
+                            for(var i=0; i < txs.length; i++){
 
-            if(account){
-                account.getTransactions({limit:100}, function(err, txs) {
-                    
-                    if(txs){
-
-                        //sort transactions for date
-                        txs.sort(function (a, b) {
-                            var dateA = new Date(a.created_at), dateB = new Date(b.created_at)
-                            return dateA - dateB
-                        });
-
-                        for(var i=0; i < txs.length; i++){
-
-                            amount_invested += parseFloat(txs[i].native_amount.amount);
-                            token_bought += parseFloat(txs[i].amount.amount);
-                            
-                            if(amount_invested < 0){
-                                //restart counts because for that wallet was sell all wallet in old transactions
-                                amount_invested =0;
-                                token_bought =0;
+                                amount_invested += parseFloat(txs[i].native_amount.amount);
+                                token_bought += parseFloat(txs[i].amount.amount);
+                                
+                                if(amount_invested < 0){
+                                    //restart counts because for that wallet was sell all wallet in old transactions
+                                    amount_invested =0;
+                                    token_bought =0;
+                                }
                             }
-                        }
 
+                            
+
+                            //add average price 
+                            var average_price_for_money = {};
+                            average_price_for_money = amount_invested / token_bought;
+
+                            var actual_price_coin = parseFloat(account.native_balance.amount) / parseFloat(account.balance.amount)
+
+
+
+                            //calculate percentage
+                            var percDiff =  parseFloat(( (actual_price_coin / average_price_for_money) - 1) * 100).toFixed(4);
                         
 
-                        //add average price 
-                        var average_price_for_money = {};
-                        average_price_for_money = amount_invested / token_bought;
-
-                        var actual_price_coin = parseFloat(account.native_balance.amount) / parseFloat(account.balance.amount)
 
 
-
-                        //calculate percentage
-                        var percDiff =  parseFloat(( (actual_price_coin / average_price_for_money) - 1) * 100).toFixed(4);
-                    
-
-
-
-                        if(vars.BOOL_MAIL_NOTIFY){
-                            //verify if percentage is over the threshold
-                            if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
-                                //start transactions
-                                mail_manage.send_mail(account.currency);                                
+                            if(vars.BOOL_MAIL_NOTIFY){
+                                //verify if percentage is over the threshold
+                                if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
+                                    //start transactions
+                                    mail_manage.send_mail(account.currency, percDiff);                                
+                                }
                             }
-                        }
 
-                        if(vars.BOOL_AUTOMATIC_TRANSFER){
-                            //verify if percentage is over the threshold
-                            if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
-                                //start transactions
-                                transferMoney(account);
+                            if(vars.BOOL_AUTOMATIC_TRANSFER){
+                                //verify if percentage is over the threshold
+                                if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
+                                    //start transactions
+                                    transferMoney(account);
+                                }
                             }
-                        }
 
-                        update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin, token_bought);
-                    }
-                });
-            }
-        });
+                            update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin, token_bought);
+                        }
+                    });
+                }
+            });
+        }catch(error){
+            console.log("*****************");
+        }
     }
 }
 
