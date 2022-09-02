@@ -41,7 +41,7 @@ function verifyValueSLive(){
 
 
 //function to trasfer money at the last account with minus percDiff in array
-function transferMoney(account){
+/* function transferMoney(account){
 
     if(verifyValueSLive()){
         wallet.sort(function (a, b) {
@@ -67,12 +67,12 @@ function transferMoney(account){
     }
 
 
-}
+} */
 
 var set_wallet_async = function(client){
     client.getAccounts({limit: 100}, function(error, accounts) {
 
-
+        
         wallet = accounts.filter(function(x){
             delete x.client;
             delete x.primary;
@@ -157,19 +157,21 @@ var add_amount_transcations_async = function(client_coinbase){
 
                             if(vars.BOOL_MAIL_NOTIFY){
                                 //verify if percentage is over the threshold
-                                if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
+                                if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_OVER_NOTIFY)){
                                     //start transactions
-                                    mail_manage.send_mail(account.currency, percDiff);                                
+                                    mail_manage.send_alert(account.currency, percDiff, true);                                
+                                }else if(percDiff < parseFloat(vars.PERCENTAGE_THRESHOLD_LESS_NOTIFY)){
+                                    mail_manage.send_alert(account.currency, percDiff, false);  
                                 }
                             }
 
-                            if(vars.BOOL_AUTOMATIC_TRANSFER){
+                            /* if(vars.BOOL_AUTOMATIC_TRANSFER){
                                 //verify if percentage is over the threshold
                                 if(percDiff > parseFloat(vars.PERCENTAGE_THRESHOLD_NOTIFY)){
                                     //start transactions
                                     transferMoney(account);
                                 }
-                            }
+                            } */
 
                             update_wallet(account.currency, txs.length, amount_invested, parseFloat(account.native_balance.amount), percDiff, average_price_for_money, actual_price_coin, token_bought);
                         }

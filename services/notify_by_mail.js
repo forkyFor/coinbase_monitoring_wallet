@@ -5,7 +5,7 @@ const vars = yenv('vars.yaml');
 var mail_sent = [];
 
 var transporter = nodemailer.createTransport({
-    service: vars.PROVIDER_MAIL_NOTIFY,
+    host: vars.PROVIDER_MAIL_NOTIFY,
     auth: {
       user: vars.MAIL_NOTIFY,
       pass: vars.PWD_MAIL_NOTIFY
@@ -19,13 +19,22 @@ setInterval(function() {
 }, 60000 * 5);
 
 
-var send_mail_async = function(coin, percentage){
+var send_alert_async = function(coin, percentage, isOver){
 
     if(mail_sent.find(element => element == coin) == undefined){
+
+        var subject= "";
+
+        if(isOver){
+            subject =  'Coin ' + coin + ' over ' + vars.PERCENTAGE_THRESHOLD_OVER_NOTIFY + ' profit!';  
+        }else{
+            subject =  'Coin ' + coin + ' less ' + vars.PERCENTAGE_THRESHOLD_LESS_NOTIFY + ' profit!';
+        }
+
         var mailOptions = {
             from: vars.MAIL_NOTIFY,
             to: vars.MAIL_DEST_NOTIFY,
-            subject: 'Coin ' + coin + ' over ' + vars.PERCENTAGE_THRESHOLD_NOTIFY + ' profit!',
+            subject: subject,
             text: 'Actual profit: ' + percentage,
             attachments: [
                 {
@@ -98,8 +107,8 @@ var send_mail_report_async = function(){
 }
 
 
-async function send_mail(coin, percentage) {
-    return await send_mail_async(coin, percentage);
+async function send_alert(coin, percentage) {
+    return await send_alert_async(coin, percentage);
 }
 
 async function send_mail_transaction(from_currency, to_currency, amount_sent, err, txt) {
@@ -111,7 +120,7 @@ async function send_mail_report() {
 }
 
 module.exports = {
-    send_mail: send_mail,
+    send_alert: send_alert,
     send_mail_transaction: send_mail_transaction,
     send_mail_report: send_mail_report
 }
